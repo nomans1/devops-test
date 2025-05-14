@@ -35,7 +35,7 @@ controller:
                               github:
                                 apiUri: "https://api.github.com"
                                 repoOwner: "nomans1"
-                                repository: "sample-job"
+                                repository: "devops-test"
                                 credentialsId: "github-credentials"
   installPlugins:
     - kubernetes:latest
