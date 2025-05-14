@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+    environment {
+        AWS_REGION = 'us-east-1'
+        ECR_REPO = 'your-ecr-repo-url'
+        IMAGE_TAG = "sample-node-app:${env.BUILD_NUMBER}"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Lint') {
+            steps {
+                sh 'yamllint k8s/'
+            }
+        }
+        stage('Test') {
+            steps {
+                dir('app') {
+                    sh 'npm install'
+                    sh 'npm test'
+                }
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("$IMAGE_TAG", './app')
+                }
+            }
+        }
+        stage('Push to ECR') {
+            steps {
+                echo 'Simulate push to ECR or implement AWS CLI commands here'
+            }
+        }
+        stage('Deploy to EKS') {
+            steps {
+                echo 'Simulate deploy to EKS or run kubectl apply'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+    }
+}

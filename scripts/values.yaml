@@ -1,0 +1,47 @@
+controller:
+  JCasC:
+    configScripts:
+      jenkins-config: |
+        jenkins:
+          systemMessage: "Jenkins configured as code!"
+          securityRealm:
+            local:
+              allowsSignup: false
+              users:
+                - id: "admin"
+                  password: "admin"
+          authorizationStrategy:
+            loggedInUsersCanDoAnything:
+              allowAnonymousRead: false
+          credentials:
+            system:
+              domainCredentials:
+                - domain:
+                    name: "github"
+                    credentials:
+                      - usernamePassword:
+                          id: "github-credentials"
+                          username: "nomans1"
+                          password: "your-github-token"
+          jobs:
+            - folder:
+                name: "Microservices"
+                jobs:
+                  - multibranchPipelineJob:
+                      name: "nodejs-app"
+                      branchSources:
+                        - branchSource:
+                            source:
+                              github:
+                                apiUri: "https://api.github.com"
+                                repoOwner: "nomans1"
+                                repository: "sample-job"
+                                credentialsId: "github-credentials"
+  installPlugins:
+    - kubernetes:latest
+    - kubernetes-credentials:latest
+    - workflow-aggregator:latest
+    - workflow-job:latest
+    - credentials-binding:latest
+    - git:latest
+    - github-branch-source:latest
