@@ -17,7 +17,7 @@ controller:
                       scope: GLOBAL
                       id: "github"
                       username: "nomans1"
-                      password: "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"
+                      password: "somepassword"
                       description: "Username/Password Credentials for github"
         jobs:
           - script: |
