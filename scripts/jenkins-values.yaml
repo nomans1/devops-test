@@ -17,7 +17,7 @@ controller:
                       scope: GLOBAL
                       id: "github"
                       username: "nomans1"
-                      password: "somepassword"
+                      password: "somepw"
                       description: "Username/Password Credentials for github"
         jobs:
           - script: |
@@ -27,11 +27,7 @@ controller:
                           id = 'devops-test'
                           remote('https://github.com/nomans1/devops-test.git')
                           credentialsId('github')
-                          traits {
-                            branchNameFilterTrait {
-                              includes('develop preprod')
-                            }
-                          }
+                          includes('develop')
                       }
                   }
                   factory {
@@ -39,6 +35,7 @@ controller:
                       scriptPath('jenkins/Jenkinsfile')
                     }
                   }  
+
               }
 agent:  
   podTemplates:
