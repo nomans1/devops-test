@@ -52,6 +52,14 @@ else
   echo "⚠️ Namespace 'jenkins' already exists. Skipping."
 fi
 
+# Create applications namespace if it doesn't exist
+if ! kubectl get namespace applications  &>/dev/null; then
+  kubectl create namespace applications
+  echo "✅ Namespace 'applications' created."
+else
+  echo "⚠️ Namespace 'applications' already exists. Skipping."
+fi
+
 echo "📥 Adding Jenkins Helm repository..."
 helm repo add jenkins https://charts.jenkins.io
 helm repo update
@@ -59,15 +67,15 @@ helm repo update
 echo "📦 Installing Jenkins in the 'jenkins' namespace..."
 
 # Install Jenkins via Helm
-helm upgrade --install jenkins jenkins/jenkins -f values.yaml --namespace jenkins
+helm upgrade -f ./jenkins-values.yaml --install myjenkins jenkins/jenkins  -n jenkins
 
 echo "⏳ Waiting for Jenkins pods to be ready..."
-kubectl rollout status statefulset/jenkins --namespace jenkins --timeout=180s || true
+kubectl rollout status statefulset/myjenkins --namespace jenkins --timeout=180s || true
 
 echo "🔑 Fetching Jenkins admin password..."
-kubectl get secret --namespace jenkins jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode && echo
+kubectl get secret --namespace jenkins myjenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode && echo
 
 echo "🌐 Port forwarding Jenkins service to http://localhost:8080"
 echo "Press Ctrl+C to stop port forwarding."
 
-kubectl --namespace jenkins port-forward svc/jenkins 8080:8080
+kubectl --namespace jenkins port-forward svc/myjenkins 8080:8080

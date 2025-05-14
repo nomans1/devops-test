@@ -1,5 +1,9 @@
 pipeline {
-    agent any
+    agent {
+        kubernetes {
+            label 'build-agent'  // This should match the label defined in your pod template
+        }
+    }
     environment {
         AWS_REGION = 'us-east-1'
         ECR_REPO = 'your-ecr-repo-url'

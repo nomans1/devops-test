@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: node-agent
+  labels:
+    jenkins: slave
+    jenkins/docker: 'true'
+spec:
+  activeDeadlineSeconds: 5400
+  containers:
+  - name: nodejs21
+    image: node:21.4.0-bullseye
+    command:
+    - cat
+    tty: true
+  - name: kaniko 
+    image: gcr.io/kaniko-project/executor:v1.7.0-debug
+    env:
+    - name: AWS_DEFAULT_REGION
+      value: eu-central-1
+    command:
+    - /busybox/cat
+    tty: true
+    volumeMounts:
+     - name: docker-config
+       mountPath: /kaniko/.docker/
+  volumes:
+  - name: docker-config
+    configMap:
+      name: docker-config
+  - name: dockersock
+    hostPath:
+      path: /var/run/docker.sock

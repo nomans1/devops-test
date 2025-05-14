@@ -1,0 +1,75 @@
+controller:
+  admin:
+    username: "admin"
+    password: "admin123"
+  additionalPlugins:
+    - job-dsl:1.92
+  JCasC:
+    configScripts:
+      jenkins-config: |
+        jenkins:
+          systemMessage: "Jenkins configured as code!"
+        credentials:
+          system:
+            domainCredentials:
+              - credentials:
+                  - usernamePassword:
+                      scope: GLOBAL
+                      id: "github"
+                      username: "nomans1"
+                      password: "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"
+                      description: "Username/Password Credentials for github"
+        jobs:
+          - script: |
+              multibranchPipelineJob('devops-test') {
+                  branchSources {
+                      git {
+                          id = 'devops-test'
+                          remote('https://github.com/nomans1/devops-test.git')
+                          credentialsId('github')
+                          traits {
+                            branchNameFilterTrait {
+                              includes('develop preprod')
+                            }
+                          }
+                      }
+                  }
+                  factory {
+                    workflowBranchProjectFactory {
+                      scriptPath('jenkins/Jenkinsfile')
+                    }
+                  }  
+              }
+agent:  
+  podTemplates:
+    build-agent: |
+      - name: python
+        label: python
+        serviceAccount: myjenkins
+        containers:
+          - name: python
+            image: python:3
+            command: "/bin/sh -c"
+            args: "cat"
+            ttyEnabled: true
+            privileged: true
+            resourceRequestCpu: "200m"
+            resourceRequestMemory: "512Mi"
+            resourceLimitCpu: "200m"
+            resourceLimitMemory: "512Mi" 
+      - name: nodejs
+        label: nodejs
+        serviceAccount: myjenkins
+        containers:
+          - name: node
+            image: node:21
+            command: "/bin/sh -c"
+            args: "cat"
+            ttyEnabled: true
+            privileged: true
+            resourceRequestCpu: "200m"
+            resourceRequestMemory: "512Mi"
+            resourceLimitCpu: "200m"
+            resourceLimitMemory: "512Mi"             
+
+
