@@ -26,7 +26,10 @@ def call(Map config = [:]) {
             stage('Docker Build') {
                 steps {
                     container('docker') {
-                        sh 'docker build . -t ${ECR_REPO}:${IMAGE_TAG}'
+                        // sh 'docker build . -t ${ECR_REPO}:${IMAGE_TAG}'
+                        script {
+                            docker.build("$IMAGE_TAG", './app')
+                        }
                     }
                     echo 'Simulate push to ECR or implement AWS CLI commands here'
                 }
