@@ -1,10 +1,6 @@
 def call(Map config = [:]) {
     pipeline {
-        agent {
-            kubernetes {
-                label 'default'
-            }
-        }
+        agent any
         environment {
             AWS_REGION = 'us-east-1'
             ECR_REPO = 'ns1'
@@ -23,13 +19,21 @@ def call(Map config = [:]) {
                     }
                 }
             }
-            stage('Docker Build') {
+            stage('Test') {
+                steps {
+                    container('nodejs') {
+                        sh 'cd app && npm test'
+                    }
+                }
+            }            
+            stage('Docker Build & Push') {
                 steps {
                     container('docker') {
-                        // sh 'docker build . -t ${ECR_REPO}:${IMAGE_TAG}'
-                        script {
-                            docker.build("$IMAGE_TAG", './app')
-                        }
+                        sh '''
+                          cd app
+                          docker build . -t sample-node-app:${BUILD_NUMBER}
+                        '''
+
                     }
                     echo 'Simulate push to ECR or implement AWS CLI commands here'
                 }
