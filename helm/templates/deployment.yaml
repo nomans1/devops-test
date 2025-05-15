@@ -8,7 +8,6 @@ metadata:
     {{- with .Values.labels }}
     {{- toYaml . | nindent 4 }}
     {{- end}}
-    {{- include "mychart.labels" . | nindent 4 }}
   name: {{.Values.name}}
   namespace: {{.Release.Namespace}}
 spec:
@@ -22,7 +21,6 @@ spec:
       labels:
         app: {{.Values.name}}
         env: {{.Release.Namespace}}
-        {{- include "mychart.labels" . | nindent 8 }}
     spec:
     {{- with .Values.hostAliases }}
       hostAliases:
@@ -70,13 +68,6 @@ spec:
 
 
       volumes:
-      {{- if .Values.fluentd.enabled }}
-        - name: fluentd-config-{{- .Values.name }}
-          configMap:
-            name: fluentd-config-{{- .Values.name }}
-        - name: application-logs
-          emptyDir: {}
-      {{- end }}
 
       {{- range .Values.volumes }}
       {{- if .volume }}

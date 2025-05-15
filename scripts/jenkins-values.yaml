@@ -17,18 +17,18 @@ controller:
                       scope: GLOBAL
                       id: "github"
                       username: "nomans1"
-                      password: "gitPat"
+                      password: "gitPAT"
                       description: "Username/Password Credentials for github"
         unclassified:
           globalLibraries:
             libraries:
-              - name: shared-library
-                defaultVersion: develop
+              - name: "pipeline-library"
                 retriever:
                   modernSCM:
-                    git:
-                      remote: https://github.com/nomans1/devops-test.git
-                      credentialsId: github        
+                    scm:
+                      git:
+                        remote: "https://github.com/nomans1/devops-test.git"
+                        credentialsId: "github"      
         
         jobs:
           - script: |
@@ -59,11 +59,16 @@ agent:
     spec:
       activeDeadlineSeconds: 5400
       containers:
-      - name: nodejs21
-        image: node:21.4.0-bullseye
+      - name: nodejs
+        image: node:18
         command:
         - cat
         tty: true
+      - name: kube-tools
+        image: dtzar/helm-kubectl
+        command:
+        - cat
+        tty: true        
       - name: docker
         image: docker:24.0.7
         volumeMounts:

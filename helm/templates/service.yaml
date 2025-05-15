@@ -5,7 +5,6 @@ metadata:
   labels:
     app: {{ .Values.name }}
     env: {{ .Release.Namespace }}
-    {{- include "mychart.labels" . | nindent 4 }}
   name: {{ .Values.name }}
   namespace: {{ .Release.Namespace }}
 spec:
