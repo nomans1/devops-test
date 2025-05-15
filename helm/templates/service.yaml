@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ .Values.name }}
+    env: {{ .Release.Namespace }}
+    {{- include "mychart.labels" . | nindent 4 }}
+  name: {{ .Values.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    app: {{ .Values.name }}
+    env: {{ .Release.Namespace }}
+  ports:
+    - name: {{.Values.service.name}}
+      port: {{.Values.service.port}}
+      targetPort: {{.Values.service.targetPort}}

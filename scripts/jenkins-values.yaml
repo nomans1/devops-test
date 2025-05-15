@@ -17,8 +17,19 @@ controller:
                       scope: GLOBAL
                       id: "github"
                       username: "nomans1"
-                      password: "somepw"
+                      password: "gitPat"
                       description: "Username/Password Credentials for github"
+        unclassified:
+          globalLibraries:
+            libraries:
+              - name: shared-library
+                defaultVersion: develop
+                retriever:
+                  modernSCM:
+                    git:
+                      remote: https://github.com/nomans1/devops-test.git
+                      credentialsId: github        
+        
         jobs:
           - script: |
               multibranchPipelineJob('devops-test') {
@@ -35,38 +46,40 @@ controller:
                       scriptPath('jenkins/Jenkinsfile')
                     }
                   }  
-
               }
 agent:  
-  podTemplates:
-    build-agent: |
-      - name: python
-        label: python
-        serviceAccount: myjenkins
-        containers:
-          - name: python
-            image: python:3
-            command: "/bin/sh -c"
-            args: "cat"
-            ttyEnabled: true
-            privileged: true
-            resourceRequestCpu: "200m"
-            resourceRequestMemory: "512Mi"
-            resourceLimitCpu: "200m"
-            resourceLimitMemory: "512Mi" 
-      - name: nodejs
-        label: nodejs
-        serviceAccount: myjenkins
-        containers:
-          - name: node
-            image: node:21
-            command: "/bin/sh -c"
-            args: "cat"
-            ttyEnabled: true
-            privileged: true
-            resourceRequestCpu: "200m"
-            resourceRequestMemory: "512Mi"
-            resourceLimitCpu: "200m"
-            resourceLimitMemory: "512Mi"             
+  yamlTemplate: |-
+    apiVersion: v1
+    kind: Pod
+    metadata:
+    name: build-agent
+    labels:
+      jenkins: slave
+      jenkins/docker: 'true'
+    spec:
+      activeDeadlineSeconds: 5400
+      containers:
+      - name: nodejs21
+        image: node:21.4.0-bullseye
+        command:
+        - cat
+        tty: true
+      - name: docker
+        image: docker:24.0.7
+        volumeMounts:
+        - name: dockersock
+          mountPath: "/var/run/docker.sock"
+        command:
+        - cat
+        tty: true
+      volumes:
+        - name: docker-config
+          configMap:
+            name: docker-config
+        - name: dockersock
+          hostPath:
+            path: /var/run/docker.sock
+
+           
 
 
