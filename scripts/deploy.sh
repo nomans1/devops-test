@@ -66,16 +66,28 @@ helm repo update
 
 echo "📦 Installing Jenkins in the 'jenkins' namespace..."
 
+echo "Checking if cluster role binding 'permissive-binding' exists..."
+
+if kubectl get clusterrolebinding permissive-binding > /dev/null 2>&1; then
+  echo "ClusterRoleBinding 'permissive-binding' already exists. Proceeding..."
+else
+  echo "Creating cluster role binding for Jenkins..."
+  kubectl create clusterrolebinding permissive-binding \
+    --clusterrole=cluster-admin \
+    --user=admin \
+    --user=kubelet \
+    --group=system:serviceaccounts
+fi
 # Install Jenkins via Helm
-helm upgrade -f ./jenkins-values.yaml --install myjenkins jenkins/jenkins  -n jenkins
+helm upgrade -f ./jenkins-values.yaml --install jenkins jenkins/jenkins  -n jenkins
 
 echo "⏳ Waiting for Jenkins pods to be ready..."
-kubectl rollout status statefulset/myjenkins --namespace jenkins --timeout=180s || true
+kubectl rollout status statefulset/jenkins --namespace jenkins --timeout=180s || true
 
 echo "🔑 Fetching Jenkins admin password..."
-kubectl get secret --namespace jenkins myjenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode && echo
+kubectl get secret --namespace jenkins jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode && echo
 
 echo "🌐 Port forwarding Jenkins service to http://localhost:8080"
 echo "Press Ctrl+C to stop port forwarding."
 
-kubectl --namespace jenkins port-forward svc/myjenkins 8080:8080
+kubectl --namespace jenkins port-forward svc/jenkins 8080:8080

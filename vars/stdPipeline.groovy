@@ -29,10 +29,14 @@ def call(Map config = [:]) {
             stage('Docker Build & Push') {
                 steps {
                     container('docker') {
-                        sh '''
-                          cd app
-                          docker build . -t sample-node-app:${BUILD_NUMBER}
-                        '''
+                        withDockerRegistry([credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/']) {
+                            sh '''
+                              cd app
+                              docker build . -t sample-node-app:${BUILD_NUMBER}
+                              docker tag sample-node-app:${BUILD_NUMBER} nomis1/ns1:sample-node-app:${BUILD_NUMBER}
+                              docker push nomis1/ns1:sample-node-app:${BUILD_NUMBER}
+                            '''
+                        }
 
                     }
                     echo 'Simulate push to ECR or implement AWS CLI commands here'
@@ -40,6 +44,12 @@ def call(Map config = [:]) {
             }
             stage('Deploy to EKS') {
                 steps {
+                    container('kube-tools') {
+                        sh '''
+                          ls
+                        '''
+
+                    }
                     echo 'Simulate deploy to EKS or run kubectl apply'
                 }
             }

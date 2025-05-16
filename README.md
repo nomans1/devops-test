@@ -22,3 +22,9 @@ Install the minikube:
 
 ```bash
 brew install minikube
+
+
+Run ./deploy.sh 
+
+Go into localhost:3000
+Go into devops-test and add shared libraries

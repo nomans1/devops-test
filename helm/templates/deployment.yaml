@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -50,33 +49,11 @@ spec:
           ports:
             - containerPort: {{ .Values.service.targetPort | default 8080 }}
               name: {{.Values.service.name}}
-          volumeMounts:
-        {{- range .Values.volumes }}
-            - name: {{ .name | quote }}
-              mountPath: {{ .mountPath | quote }}
-          {{- if .readOnly }}
-              readOnly: {{ .readOnly | default false }}
-          {{- end }}
-        {{- end }}
-
 
       {{- if .Values.sidecarContainers }}
-
 {{ toYaml .Values.sidecarContainers | indent 6 }}
-
       {{- end}}
 
-
-      volumes:
-
-      {{- range .Values.volumes }}
-      {{- if .volume }}
-        - name: {{ .name }}
-          {{- with .volume }}
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
-      {{- end}}
-      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
