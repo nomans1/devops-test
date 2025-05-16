@@ -58,7 +58,13 @@ To add pipeline libraries in Jenkins:
 4. Scroll down to 'Pipeline Libraries' and fill in the required details.
 ![image info](./docs/imgs/configuration.png)
 
-## Todos
+Once the Shared Libraries are added, you can execute the pipeline and it will deploy a sample NodeJS application in the applications namespace which can then be accessed via a port-forward with the below command
+
+```bash
+kubectl -n applications port-forward svc/sample-node-app 8000:8000
+```
+
+## Improvements
 - Improve ClusterRoleBinding
 - Shared Libraries casc needs to be fixed so we don't need to manually add it through the GUI
     - Make shared libraries more modular
@@ -67,3 +73,6 @@ To add pipeline libraries in Jenkins:
 - Secret Management through Vault, AWS Secrets Manager etc insteading of harcoding secrets in the jenkins-values.yaml
 - Configure Jenkins to pick up agents from scripts/agents folder to allow users to define their own agents
 
+## Todos
+- terraform for ECR/EKS provisioning 
+- Github Actions
