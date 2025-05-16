@@ -13,5 +13,5 @@ resources:
   requests:
     cpu: 300m
     memory: 250Mi
-name: my-node-js-app
-imageName: <image-name>
+name: sample-node-app
+imageName: nomis1/ns1:sample-node-app_6

@@ -4,6 +4,7 @@ controller:
     password: "admin123"
   additionalPlugins:
     - job-dsl:1.92
+    - docker-workflow:611.v16e84da_6d3ff
   JCasC:
     configScripts:
       jenkins-config: |
@@ -17,19 +18,14 @@ controller:
                       scope: GLOBAL
                       id: "github"
                       username: "nomans1"
-                      password: "gitPAT"
-                      description: "Username/Password Credentials for github"
-        unclassified:
-          globalLibraries:
-            libraries:
-              - name: "pipeline-library"
-                retriever:
-                  modernSCM:
-                    scm:
-                      git:
-                        remote: "https://github.com/nomans1/devops-test.git"
-                        credentialsId: "github"      
-        
+                      password: "pw"
+                      description: "Username/Password Credentials for github"    
+                  - usernamePassword:
+                      scope: GLOBAL
+                      id: "dockerhub"
+                      username: "nomis1"
+                      password: "pw"
+                      description: "Credentials for DockerHub"         
         jobs:
           - script: |
               multibranchPipelineJob('devops-test') {
@@ -47,6 +43,17 @@ controller:
                     }
                   }  
               }
+      unclassified-casc: |
+        unclassified:
+          globalLibraries:
+            libraries:
+              - name: "pipeline-library"
+                retriever:
+                  modernSCM:
+                    scm:
+                      git:
+                        remote: "https://github.com/nomans1/devops-test.git"
+                        credentialsId: "github"          
 agent:  
   yamlTemplate: |-
     apiVersion: v1

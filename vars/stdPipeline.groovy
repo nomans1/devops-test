@@ -3,8 +3,9 @@ def call(Map config = [:]) {
         agent any
         environment {
             AWS_REGION = 'us-east-1'
-            ECR_REPO = 'ns1'
-            IMAGE_TAG = "sample-node-app:${env.BUILD_NUMBER}"
+            ECR_REPO = "nomis1/ns1"
+            IMAGE_TAG = "sample-node-app_${env.BUILD_NUMBER}"
+            PUSHED_IMAGE = "${ECR_REPO}:${IMAGE_TAG}"
         }
         stages {
             stage('Checkout') {
@@ -32,9 +33,9 @@ def call(Map config = [:]) {
                         withDockerRegistry([credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/']) {
                             sh '''
                               cd app
-                              docker build . -t sample-node-app:${BUILD_NUMBER}
-                              docker tag sample-node-app:${BUILD_NUMBER} nomis1/ns1:sample-node-app:${BUILD_NUMBER}
-                              docker push nomis1/ns1:sample-node-app:${BUILD_NUMBER}
+                              docker build . -t ${IMAGE_TAG}
+                              docker tag ${IMAGE_TAG} ${ECR_REPO}:${IMAGE_TAG}
+                              docker push ${ECR_REPO}:${IMAGE_TAG}
                             '''
                         }
 
@@ -46,11 +47,11 @@ def call(Map config = [:]) {
                 steps {
                     container('kube-tools') {
                         sh '''
-                          ls
+                        cd helm
+                        helm upgrade -f ./values.yaml --install sample-node-app . --set 'image.name=nomis1/ns1:sample-node-app_6' -n applications
                         '''
 
                     }
-                    echo 'Simulate deploy to EKS or run kubectl apply'
                 }
             }
         }
