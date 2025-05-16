@@ -48,7 +48,7 @@ def call(Map config = [:]) {
                     container('kube-tools') {
                         sh '''
                         cd helm
-                        helm upgrade -f ./values.yaml --install sample-node-app . --set 'image.name=nomis1/ns1:sample-node-app_6' -n applications
+                        helm upgrade -f ./values.yaml --install sample-node-app . --set imageName=${PUSHED_IMAGE} -n applications
                         '''
 
                     }
