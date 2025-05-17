@@ -2,6 +2,8 @@
 
 This guide provides step-by-step instructions to install and configure Jenkins on Minikube using Helm on macOS.
 
+To learn more about the design rationale and details on the solution, please refer to the [Basic Architectural principles](docs/architecture.md). 
+
 ## Overview
 **Note:** All of the steps mentioned below are executed by running the `deploy.sh` script attached.
 **Note:** Before running the `deploy.sh` script, update the `jenkins-values.yaml` file with your own DockerHub and GitHub credentials. You can add these credentials through Helm or modify the credentials after Jenkins is up and running.
@@ -46,33 +48,7 @@ This script checks for prerequisites, installs necessary tools, starts Minikube,
 - Press `Ctrl+C` to stop port forwarding.
 - Username & Password have been set in the `jenkins-values.yaml` as `admin` & `admin123` respectively.
 
-## Adding Pipeline Libraries
-
-To add pipeline libraries in Jenkins:
-
-1. Go to the Jenkins homepage.
-![image info](./docs/imgs/homepage.png)
-2. Navigate to the 'devops-test' pipeline.
-3. Click 'Configure' on the left navbar.
-![image info](./docs/imgs/devops-test-pipeline.png)
-4. Scroll down to 'Pipeline Libraries' and fill in the required details.
-![image info](./docs/imgs/configuration.png)
-
-Once the Shared Libraries are added, you can execute the pipeline and it will deploy a sample NodeJS application in the applications namespace which can then be accessed via a port-forward with the below command
 
 ```bash
 kubectl -n applications port-forward svc/sample-node-app 8000:8000
 ```
-
-## Improvements
-- Improve ClusterRoleBinding
-- Shared Libraries casc needs to be fixed so we don't need to manually add it through the GUI
-    - Make shared libraries more modular
-- Availability through Ingress
-- Deploying on AWS
-- Secret Management through Vault, AWS Secrets Manager etc insteading of harcoding secrets in the jenkins-values.yaml
-- Configure Jenkins to pick up agents from scripts/agents folder to allow users to define their own agents
-
-## Todos
-- terraform for ECR/EKS provisioning 
-- Github Actions
