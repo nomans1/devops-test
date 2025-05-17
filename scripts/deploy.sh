@@ -90,4 +90,6 @@ kubectl get secret --namespace jenkins jenkins -o jsonpath="{.data.jenkins-admin
 echo "🌐 Port forwarding Jenkins service to http://localhost:8080"
 echo "Press Ctrl+C to stop port forwarding."
 
+echo "Use admin and admin123 as username and password respectively to login to Jenkins"
+
 kubectl --namespace jenkins port-forward svc/jenkins 8080:8080

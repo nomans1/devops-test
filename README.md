@@ -47,8 +47,11 @@ This script checks for prerequisites, installs necessary tools, starts Minikube,
 - Port forwarding is set up to access Jenkins at http://localhost:8080.
 - Press `Ctrl+C` to stop port forwarding.
 - Username & Password have been set in the `jenkins-values.yaml` as `admin` & `admin123` respectively.
-- A sample pipeline called `devops-test` is already created and executed once Jenkins is available to deploy a NodeJS app in the `applications` namespace. Use the command below to port-forward the application and access it.
 
+
+## Application Pipeline & Access
+
+- A sample pipeline called `devops-test` is already created and executed once Jenkins is available to deploy a NodeJS app in the `applications` namespace. Use the command below to port-forward the application and access it.
 
 ```bash
 kubectl -n applications port-forward svc/sample-node-app 8000:8000
