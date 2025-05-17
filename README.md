@@ -1,6 +1,6 @@
 # Jenkins Installation on Minikube using Helm
 
-This guide provides step-by-step instructions to install and configure Jenkins on Minikube using Helm on macOS.
+This guide provides step-by-step instructions to install and configure Jenkins on Minikube using Helm on macOS. You can replace the `brew` commands with `winget` or `apt` for Windows and Ubuntu respectively in `deploy.sh`. 
 
 To learn more about the design rationale and details on the solution, please refer to the [Basic Architectural principles](docs/architecture.md). 
 
